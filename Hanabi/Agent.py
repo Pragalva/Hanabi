@@ -12,6 +12,7 @@ class Agent:
         self.cards_visible: Card = [] #The visible card of other players
         self.hint_color: int = [0,0,0,0,0]
         self.hint_number: int = [0,0,0,0,0]
+        self.discard_prio: int = [0,0,0,0,0] #added
     
     ################################################################
     #get functions
