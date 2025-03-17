@@ -2,9 +2,10 @@ from Card import Card
 from Agent import Agent
 
 #Setting the Deck and discard Pile
-Game_Deck = Card.generate_deck()
-Discard_pile = []
-Play_pile = Card.generate_play_pile()
+Game_Deck = Card.generate_deck() #Game deck
+Discard_pile = [] #List of discarded cards
+Play_pile = Card.generate_play_pile() #List of next playable cards
+Board_pile = [] #List of played cards
 
 #Setting Game parameters
 Total_hints = 8

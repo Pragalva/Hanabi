@@ -29,13 +29,13 @@ class Agent:
         #Updates the agent's cards_visible with the hands of two other agents.
         self.cards_visible = agent1.card_in_hand + agent2.card_in_hand  # Combine hands
 
-    def set_color_hint(self,hint_index = int, hint = int):
+    def set_color_hint(self,hint_index: int, hint: int):
         #Updates the agent's color hint list
-        self.hint_color(hint_index) = hint
+        self.hint_color[hint_index] = hint
     
-    def set_number_hint(self,hint_index = int, hint = int):
+    def set_number_hint(self,hint_index: int, hint: int):
         #Updates the agent's number hint list
-        self.hint_number(hint_index) = hint
+        self.hint_number[hint_index] = hint
     ############################################################################
 
     ###############################################################################
@@ -60,7 +60,7 @@ class Agent:
             hints = hints +1 #adds the token to the
 
     #Function to play a card
-    def play_card(self, deck = List[Card],play_pile = List[Card],discard_pile = List[Card],play_index =int, Fuse =int):
+    def play_card(self, deck = List[Card],play_pile = List[Card],discard_pile = List[Card],play_index =int, Fuse =int, Board_pile =List[Card]):
         Card_play = self.card_in_hand.pop(play_index) #Remove the play card from hand
         self.hint_number.pop(play_index) #Discard the hint assosicated with the card
         self.hint_color.pop(play_index)
@@ -69,6 +69,7 @@ class Agent:
             if i.get_color() == Card_play.get_color() : #Loop through to find the right color
                 if (i.get_number()+1) == Card_play.get_number(): #Check if the card if playable
                     i.number = Card_play.get_number() #Change the number to the current playable card.
+                    Board_pile.append(i)#Add the card to list of cards played
 
                 else:
                     Fuse = Fuse -1 #Lose a life for losing a life
