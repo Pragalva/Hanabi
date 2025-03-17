@@ -4,6 +4,11 @@ from Agent import Agent
 #Setting the Deck and discard Pile
 Game_Deck = Card.generate_deck()
 Discard_pile = []
+Play_pile = Card.generate_play_pile()
+
+#Setting Game parameters
+Total_hints = 8
+Fuse_Token = 3
 
 # Initilizing the Agents
 player_1 = Agent('Player_1',1)
@@ -31,9 +36,11 @@ player1Vis = player_1.get_visible_cards()
 print(f"Cards visible to player 1 = '{player1Vis}")
 """
 
-print("Which card would you like to discard")
+print("Which card would you like to play")
 discard_index = int(input())
 
-player_1.discard_card(Game_Deck,Discard_pile,(discard_index-1))
+player_1.play_card(Game_Deck,Play_pile,Discard_pile,discard_index-1,Fuse_Token)
+#player_1.discard_card(Game_Deck,Discard_pile,(discard_index-1),Total_hints)
 print(f"Player 1 = {player_1.get_cards_in_hand()}")
 print(Discard_pile)
+print(Play_pile)

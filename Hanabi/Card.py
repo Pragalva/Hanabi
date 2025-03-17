@@ -46,3 +46,14 @@ class Card:
         random.shuffle(deck)
         return deck
 
+    #Create a blank special deck for playing cards
+    def generate_play_pile()-> List["Card"]:
+        play_pile: List[Card] = []
+
+        #Create a Card with zero color
+        for color in Color:
+            card = Card(0,color)
+            play_pile.append(card)
+        
+        #Return the play pile
+        return play_pile
