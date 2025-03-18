@@ -12,6 +12,8 @@ class Agent:
         self.cards_visible: Card = [] #The visible card of other players
         self.hint_color: int = [0,0,0,0,0]
         self.hint_number: int = [0,0,0,0,0]
+        self.hint_color_pending: int = [0,0,0,0,0] #To track what hints are pending this turn
+        self.hint_number_pending: int = [0,0,0,0,0] #To track what hints are pending this turn
         self.discard_prio: int = [0,0,0,0,0] #added
     
     ################################################################
@@ -30,12 +32,12 @@ class Agent:
         self.cards_visible = agent1.card_in_hand + agent2.card_in_hand  # Combine hands
 
     def set_color_hint(self,hint_index: int, hint: int):
-        #Updates the agent's color hint list
-        self.hint_color[hint_index] = hint
+        #Updates the agent's pending color hint list
+        self.hint_color_pending[hint_index] = hint
     
     def set_number_hint(self,hint_index: int, hint: int):
-        #Updates the agent's number hint list
-        self.hint_number[hint_index] = hint
+        #Updates the agent's pending number hint list
+        self.hint_number_pending[hint_index] = hint
     ############################################################################
 
     ###############################################################################
@@ -56,7 +58,7 @@ class Agent:
         discard.append(discard_card) #add the discard card to the discard pile
         self.draw_card(deck) #draw a new card
 
-        if(hints >=8):
+        if(hints <=8):
             hints = hints +1 #adds the token to the
 
     #Function to play a card
