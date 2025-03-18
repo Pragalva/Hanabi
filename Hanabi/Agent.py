@@ -40,6 +40,7 @@ class Agent:
         card_for_hint = self.card_in_hand[hint_index]
         card_for_hint.set_number_hint(hint)
     ############################################################################
+
     ###############################################################################
     #Actions
     #Function to draw a card

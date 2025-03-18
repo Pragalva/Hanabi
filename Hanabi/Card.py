@@ -16,8 +16,10 @@ class Card:
     def __init__(self, number: int, color: Color):
         self._number: int = number
         self._color: Color = color
+
         self.number_hint: int = 0
         self.color_hint: int = 0
+        
     def __repr__(self):
         return f"Card({self._number}, {self._color.name})"
     def get_number(self):
