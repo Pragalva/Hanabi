@@ -10,6 +10,7 @@ class State:
         self.Board_pile = [] #List of played cards
         self.Total_hints = 8
         self.Fuse_Token = 3
+
     #Creation of Deck for the game
     #Create a blanks list of card, adds card for each color and number in the game. Then randomizes the array and returns a array
     def generate_deck(self):
@@ -23,7 +24,8 @@ class State:
                 deck.append(card)
         #Randomize the list created and return the deck
         random.shuffle(deck)
-        self.Game_Deck = deck   
+        self.Game_Deck = deck
+           
     #Create a blank special deck for playing cards
     def generate_play_pile(self):
         play_pile: List[Card] = []
