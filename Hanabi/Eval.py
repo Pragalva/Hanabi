@@ -1,8 +1,10 @@
 from Agent import Agent
-from Card import Card
+from Card import Card, Color
+from State_Andrea import State
 from typing import List
+import numpy as np
 
-# Evaluation function to choose with card to discard 
+# Evaluation function to choose with card to discard
 def eval_discard (player: "Agent", discard_pile, board_pile):
     #Prioritizing which card to discard first
     #higher numbers in discard_prio means that this card should be discarded first 
@@ -40,13 +42,13 @@ def eval_discard (player: "Agent", discard_pile, board_pile):
     
     return best2discard
 
-def playable(Card_to_check:"Card",Last_played: List[Card])->int:
-     for i in Last_played:
-            if i.get_color() == Card_to_check.get_color() : #Loop through to find the right color
-                if (i.get_number()+1) == Card_to_check.get_number(): #Check if the card if playable
-                    return 1
-                else:
-                    return 0
+def playable(Card_to_check:"Card",Last_played: List[Card])->bool:
+    for i in Last_played:
+        if i.get_color() == Card_to_check.get_color() : #Loop through to find the right color
+            if (i.get_number()+1) == Card_to_check.get_number(): #Check if the card if playable
+                return True
+    return False
+
 # Evaluation function to choose with card to play 
 def eval_play (player: "Agent", state: "State"):
     # Initialize score lists
@@ -61,18 +63,41 @@ def eval_play (player: "Agent", state: "State"):
     # Evaluate how good is to play each card
     for i, card in enumerate(player.card_in_hand):
         # First evaluation component based on the probability matrix
-        e1[i] = sum(player.card_in_hand[i].probability_matrix[state.Play_pile._number][state.Play_pile._color])
+        p_matrix = player.probability_matrix(player, state.Discard_pile, state.Board_pile)
+
+        for playable_card in state.Play_pile:
+            e1[i] += p_matrix[playable_card._color][playable_card._number][i]
 
         # Playable cards after playing the z-th card
-        for state.
-        n_z[i] = 
+        n_z: List[List[int]] = []
+        for c, color in Color:
+            for number in range(5):
+                new_play_pile = state.Play_pile
+
+                playable_cards_after_z = 0
+
+                z_card = Card(number,color)
+
+                if z_card in new_play_pile:
+                    new_play_pile.remove(z_card)
+                    y_card = Card(number + 1,color)
+                    new_play_pile.append(y_card)
+                    for player in range(3):
+                        if player != state.player_turn:
+                            for card in state.hands[player]:
+                                if card in new_play_pile:
+                                    playable_cards_after_z += 1
+                
+                n_z[c][number] = playable_cards_after_z
 
         # Average playable cards after playing the i-th card
-        for 
-        n_p[i] = sum(player.card_in_hand[i].probability_matrix[][])
+        n_p: List[int] = [0, 0, 0, 0, 0]
+        for c, color in Color:
+            for number in range(5):
+                n_p[i] += n_z[c][number] * p_matrix[color][number][i]
 
         # Second evaluation component based on the number of playable cards after playing the i-th card
-        e2[i] = (n_p[i] / 12) * (1 - e1[i])
+        e2[i] = (n_p[i] / 10) * (1 - e1[i])
 
         # Check if the card can be surely played successfully
         if e1[i] == 1:
@@ -98,24 +123,24 @@ def eval_play (player: "Agent", state: "State"):
     # Check if more than one card share the same g value
     position = np.argmax(g)
     if len(position) == 1:
-        return position, value
+        return position
     
     # Check if more than one card share the same priority value
     position = np.argmax(priority[position])
     if len(position) == 1:
-        return position, value
+        return position
     
     # Check if more than one card share the same e1 value
     position = np.argmax(e1[position])
     if len(position) == 1:
-        return position, value
+        return position
     
     # Check if more than one card share the same e2 value
     position = np.argmax(e2[position])
     if len(position) == 1:
-        return position, value
+        return position
     
     # Just choose a random card
     position = np.random.choice(position)
 
-    return position, value
+    return position
