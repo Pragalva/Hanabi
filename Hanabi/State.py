@@ -2,6 +2,7 @@ import random
 from Card import Color
 from Card import Card
 from typing import List
+
 class State:
     def _init_(self):
         self.Game_Deck = [] #Game deck
@@ -10,6 +11,7 @@ class State:
         self.Board_pile = [] #List of played cards
         self.Total_hints = 8
         self.Fuse_Token = 3
+        self.Counter_Last_Round = 3
 
         #Player Hands
         self.Player_1_card_in_hand: Card = []
@@ -52,3 +54,12 @@ class State:
 
             new_card3 =deck.pop(0)
             self.Player_3_card_in_hand.appened(new_card3)
+
+    def termination_test(self):
+        terminate = False
+        if (len(self.Game_Deck == 0)):
+            Counter_Last_Round = Counter_Last_Round - 1
+        if len(self.Board_pile == 25) | (self.Fuse_Token == 0) | (Counter_Last_Round == 0):
+            terminate = True
+
+        return terminate

@@ -12,6 +12,7 @@ class State:
         self.Total_hints = 8
         self.Fuse_Token = 3
         self.player_turn = 1
+        self.Counter_Last_Round = 3
 
         #Player Hands
         self.hands: List[List[Card]] = []
@@ -47,3 +48,12 @@ class State:
             for card in range(5):
                 new_card = deck.pop(0)
                 self.hands[player].append(new_card)
+    
+    def termination_test(self):
+        terminate = False
+        if (len(self.Game_Deck == 0)):
+            Counter_Last_Round = Counter_Last_Round - 1
+        if len(self.Board_pile == 25) | (self.Fuse_Token == 0) | (Counter_Last_Round == 0):
+            terminate = True
+
+        return terminate
