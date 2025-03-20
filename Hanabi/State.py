@@ -26,9 +26,10 @@ class State:
         Cards_in_game = [1,1,1,2,2,3,3,4,4,5]
         #Loop for creation
         for color in Color:
-            for i in Cards_in_game:
-                card = Card(i,color)
-                deck.append(card)
+            if (color != 0):
+                for i in Cards_in_game:
+                    card = Card(i,color)
+                    deck.append(card)
         #Randomize the list created and return the deck
         random.shuffle(deck)
         self.Game_Deck = deck
@@ -38,8 +39,9 @@ class State:
         play_pile: List[Card] = []
         #Create a Card with zero color
         for color in Color:
-            card = Card(0,color)
-            play_pile.append(card)
+            if (color != 0):
+                card = Card(0,color)
+                play_pile.append(card)
         
         #Return the play pile
         self.Play_pile = play_pile
