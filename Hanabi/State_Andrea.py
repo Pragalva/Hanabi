@@ -4,14 +4,14 @@ from Card import Card
 from typing import List
 
 class State:
-    def _init_(self):
-        self.Game_Deck = [] #Game deck
-        self.Discard_pile = [] #List of discarded cards
-        self.Play_pile = [] #List of next playable cards
-        self.Board_pile = [] #List of played cards
-        self.Total_hints = 8
-        self.Fuse_Token = 3
-        self.player_turn = 1
+    def _init_(self, Game_Deck = List[Card], Discard_pile = List[Card], Play_pile = List[Card], Board_pile = List[Card], Total_hints = int, Fuse_Token = int):
+        self.Game_Deck = Game_Deck #Game deck
+        self.Discard_pile = Discard_pile #List of discarded cards
+        self.Play_pile = Play_pile #List of next playable cards
+        self.Board_pile = Board_pile #List of played cards
+        self.Total_hints = Total_hints
+        self.Fuse_Token = Fuse_Token
+        self.player_turn = 0
         self.Counter_Last_Round = 3
 
         #Player Hands
