@@ -86,17 +86,22 @@ class Agent:
         self.draw_card(current_state)#Draw a card form the deck
 
     #Function to give hint
-    def give_hint(self, current_state: "State", hint_type = int, hint_index = int, hint = int, player_hint_index = int):
+    def give_hint(self, current_state: "State", hint_type = int, hint_index = [int], player_hint_index = int):
         if(current_state.Total_hints > 0 ): #Check if you have hints left
             #For color hint
             if hint_type == 0:
+                for x in hint_index:
                 #Agent.set_color_hint(hint_index,hint) #Call the set funtion to give color hint
-                current_state.hands[player_hint_index][hint_index].set_color_hint(hint)
+                    card_hint = current_state.hands[player_hint_index][hint_index[x]].get_color()
+                    current_state.hands[player_hint_index][hint_index[x]].set_color_hint(card_hint)
 
             #For number hint
             elif hint_type == 1:
+                for x in hint_index:
+                #Agent.set_color_hint(hint_index,hint) #Call the set funtion to give color hint
+                    card_hint = current_state.hands[player_hint_index][hint_index[x]].get_number()
                 #Agent.set_number_hint(hint_index,hint) #Call the set function to give number hint
-                current_state.hands[player_hint_index][hint_index].set_number_hint(hint)
+                    current_state.hands[player_hint_index][hint_index].set_number_hint(card_hint)
             
             current_state.Total_hints = current_state.Total_hints -1 #Decrease the hint total
         else:
