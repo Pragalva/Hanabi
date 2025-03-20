@@ -1,5 +1,5 @@
 from Agent import Agent
-from card import card
+from Card import Card
 from typing import List
 
 

@@ -2,7 +2,8 @@ from Card import Card
 from Agent import Agent
 from State_Andrea import State
 from Decision import Decision_for_action
-from Eval import eval_discard, eval_play, eval_hint
+from Eval import eval_discard, eval_play 
+from eval_hint import eval_hint
 
 #Setting the Deck and discard Pile
 Game_Deck = Card.generate_deck() #Game deck
@@ -26,7 +27,7 @@ state = State(Game_Deck, Discard_pile, Play_pile, Board_pile, Total_hints, Fuse_
 #Players draw their initial hand
 for card in range(5):
     for player in players:
-        player.draw_card(Game_Deck)
+        player.draw_card(state)
 
 # Game loop
 while not state.termination_test():
@@ -35,6 +36,8 @@ while not state.termination_test():
 
     # Real person player management
     if state.player_turn == 0:
+        print("Visible Cards: ", player_0.get_visible_cards(state))
+        print("Board: ", state.Board_pile)
         print(f"Player {state.player_turn}, what's your move?\n")
         print("Type 'p' to play a card\n")
         print("Type 'd' to discard a card\n")
@@ -96,7 +99,9 @@ while not state.termination_test():
     
     if state.player_turn != 0:
         print(f"Player {state.player_turn} is playing\n")
-        action_choice = Decision_for_action(state, players[state.player_turn])
+        
+        '''Something is wrong with overgiving the Agent with players[state.player_turn]'''
+        action_choice = Decision_for_action(state, players[state.player_turn],Fuse_Token)
 
         if action_choice == 0:
             players[state.player_turn].play_card(state, eval_play)
@@ -104,6 +109,7 @@ while not state.termination_test():
             players[state.player_turn].discard_card(state, eval_discard)
         elif action_choice == 2:
             players[state.player_turn].give_hint(state, eval_hint)
+
 
     # Change player's turn
     state.player_turn = (state.player_turn + 1) % 3

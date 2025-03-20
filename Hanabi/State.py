@@ -59,7 +59,7 @@ class State:
 
     def termination_test(self):
         terminate = False
-        if (len(self.Game_Deck == 0)):
+        if (len(self.Game_Deck) == 0):
             Counter_Last_Round = Counter_Last_Round - 1
         if len(self.Board_pile == 25) | (self.Fuse_Token == 0) | (Counter_Last_Round == 0):
             terminate = True

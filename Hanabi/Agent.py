@@ -23,7 +23,7 @@ class Agent:
     
     def get_visible_cards(self, current_state: "State"):
         temp_hands = current_state.hands
-        temp_hands.pop[self.player_index]
+        temp_hands.pop(self.player_index)
         return temp_hands #Returns the visible hand of the agent
     #######################################################################
     #########################################################################
@@ -48,7 +48,7 @@ class Agent:
     #Actions
     #Function to draw a card
     def draw_card(self, current_state: "State"):
-        if(current_state.Game_Deck != 0 and (len(current_state.hands[self.player_index])<= 5)): # Check if the agent can draw the card
+        if(len(current_state.Game_Deck) >= 0 and (len(current_state.hands[self.player_index])<= 5)): # Check if the agent can draw the card
             new_card = current_state.Game_Deck.pop(0)  # Remove the first card from the deck
             current_state.hands[self.player_index].append(new_card)
 
@@ -73,6 +73,8 @@ class Agent:
 
         '''self.hint_number.pop(play_index) #Discard the hint assosicated with the card
         self.hint_color.pop(play_index)'''
+
+        print("Played card: ", Card_play.get_color(), Card_play.get_number())
         for i in current_state.Play_pile:
             if i.get_color() == Card_play.get_color() : #Loop through to find the right color
                 if (i.get_number()+1) == Card_play.get_number(): #Check if the card if playable
@@ -80,7 +82,7 @@ class Agent:
                     current_state.Board_pile.append(i)#Add the card to list of cards played
                 else:
                     current_state.Fuse_Token = current_state.Fuse_Token -1 #Lose a life for losing a life
-                    print(f"Oh no!!, you lost a life.")
+                    print(f"Oh no!!, you lost a life. \n")
                     current_state.Discard_pile.append(Card_play) #Add the card to the discard pile
         
         self.draw_card(current_state)#Draw a card form the deck

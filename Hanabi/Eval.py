@@ -3,6 +3,7 @@ from Card import Card, Color
 from State_Andrea import State
 from typing import List
 import numpy as np
+from Prob import probability_matrix
 
 # Evaluation function to choose with card to discard
 def eval_discard (player: "Agent", discard_pile, board_pile):
@@ -52,18 +53,18 @@ def playable(Card_to_check:"Card",Last_played: List[Card])->bool:
 # Evaluation function to choose with card to play 
 def eval_play (player: "Agent", state: "State"):
     # Initialize score lists
-    g: list[float] = []
-    priority: list[int] = []
-    e1: list[float] = []
-    e2: list[float] = []
+    g: list[float] = [0] * len(player.card_in_hand)
+    priority: list[int] = [0] * len(player.card_in_hand)
+    e1: list[float] = [0] * len(player.card_in_hand)
+    e2: list[float] = [0] * len(player.card_in_hand)
 
     # Calculate mistakes coefficient
-    m = (state.Fuse_Tokens ** 2 + 1) / 10
+    m = (state.Fuse_Token ** 2 + 1) / 10
 
     # Evaluate how good is to play each card
     for i, card in enumerate(player.card_in_hand):
         # First evaluation component based on the probability matrix
-        p_matrix = player.probability_matrix(player, state.Discard_pile, state.Board_pile)
+        p_matrix = probability_matrix(player, state, 2,0)
 
         for playable_card in state.Play_pile:
             e1[i] += p_matrix[playable_card._color][playable_card._number][i]

@@ -45,7 +45,7 @@ class Card:
         #Defining the number of cards that we will have for our game
         Cards_in_game = [1,1,1,2,2,3,3,4,4,5]
         #Loop for creation
-        for color in Color:
+        for color in list(Color)[1:]:
             for i in Cards_in_game:
                 card = Card(i,color)
                 deck.append(card)
