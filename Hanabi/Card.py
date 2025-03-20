@@ -19,13 +19,19 @@ class Card:
 
         self.number_hint: int = 0
         self.color_hint: int = 0
-        
+
     def __repr__(self):
         return f"Card({self._number}, {self._color.name})"
     def get_number(self):
         return self._number
     def get_color(self):
         return self._color
+    
+    def get_color_hint(self):
+        return self.color_hint
+    def get_number_hint(self):
+        return self.number_hint
+
     
     def set_color_hint(self, hint):
         self.color_hint = hint
