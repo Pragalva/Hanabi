@@ -43,5 +43,6 @@ def termination_test(state) -> bool:
         state.rounds_until_game_ends -= 1
     if len(state.board_cards) == 25 or (state.fuse_tokens == 0) or (state.rounds_until_game_ends == 0):
         terminate = True
+        print("Game over \n Reached points: ", len(state.board_cards))
 
     return terminate

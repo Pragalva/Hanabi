@@ -14,14 +14,16 @@ def choose_action(state):
     expected_outcome = [0,0,0]
 
     #Outcome of playing a card
-    expected_outcome[0] = certainty_play - (1 - certainty_play)*1/(state.fuse_tokens)*len(state.board_cards)
+    expected_outcome[0] = certainty_play - (1 - certainty_play)*1/(state.fuse_tokens) #*len(state.board_cards)
 
     #Outcome of discarding a card
     expected_outcome[2] = certainty_discard*(state.max_hint_tokens - state.hint_tokens)/state.max_hint_tokens
     
     #Outcome of hinting an other player
     expected_outcome[1] = state.hint_tokens/state.max_hint_tokens*information_gain
-    
+
+    print("Expected outcome: ", expected_outcome)
+    print("Information gain: ", information_gain)
     best_action = np.argmax(expected_outcome) #0-> play card, 1-> hint, 2-> discard
 
     return best_action
