@@ -92,8 +92,7 @@ class Agent:
                 card.hinted_excluded_colors.extend(c for c in Color if (c != color or c != Color.NO_COLOR))
                 print(f"{state.players[player_hint_index].player_name} has a {color} card in the position {card_index + 1}")
             else:
-                card.hinted_excluded_colors.append(color)
-        
+                card.hinted_excluded_colors.append(color)       
         # Spend the hint token
         state.hint_tokens -= 1
 
@@ -102,8 +101,6 @@ class Agent:
 
     def give_number_hint(self, state: "State", player_hint_index: int, number: int):
         # Give hint
-        print(f"{self.player_name} has given a color hint to {state.players[player_hint_index].player_name}\n")
-
         for card_index, card in enumerate(state.players[player_hint_index].hand_cards):
             if card.get_number() == number:
                 card.set_number_hint(True)
@@ -120,16 +117,13 @@ class Agent:
 
     def do_player_action(self, state: "State"):
         # Show other players' hands
-        print(f"Hand of {state.players[1].player_name}:\n")
-        print(f"{state.players[1].get_hand_cards()}\n")
-        print(f"Hand of {state.players[2].player_name}:\n")
-        print(f"{state.players[2].get_hand_cards()}\n")
+        print(f"Hand of {state.players[1].player_name}:", state.players[1].get_hand_cards(), "\n")
+        print(f"Hand of {state.players[2].player_name}:", state.players[2].get_hand_cards(), "\n")
+        print("Current Board: ", state.board_cards,"\n")
+        print("Number of hints left: ", state.hint_tokens, ", Number of lives left: ", state.fuse_tokens, "\n")
 
         # Player's action
-        print(f"{state.players[state.player_turn].player_name}, what's your move?\n")
-        print("Type 'p' to play a card\n")
-        print("Type 'd' to discard a card\n")
-        print("Type 'h' to give a hint\n")
+        print(f"{state.players[state.player_turn].player_name}, what's your move? Type 'p' to play a card, 'd' to discard or 'h' to give a hint\n")
 
         # Check the player's action
         valid_key_action = False
@@ -144,16 +138,14 @@ class Agent:
 
             # Resolve play action
             if action_choice == 'p':
-                print(f"What card do you want to play?\n")
-                print("Type a number from 1 to 5\n")
+                print(f"What card do you want to play? Type a number from 1 to 5\n")
                 play_card_index = (int(input(">>> ")) - 1) % 5
 
                 state.players[state.player_turn].play_card(state, play_card_index)
 
             # Resolve discard action
             elif action_choice == 'd':
-                print(f"What card do you want to discard?\n")
-                print("Type a number from '1' to '5'\n")
+                print(f"What card do you want to discard? Type a number from '1' to '5'\n")
                 discard_card_index = (int(input(">>> ")) - 1) % 5
 
                 state.players[state.player_turn].discard_card(state, discard_card_index)
@@ -164,8 +156,7 @@ class Agent:
                     print("You have no more hint tokens left! Choose another action!\n")
                     continue
 
-                print(f"What type of hint do you want to give?\n")
-                print("Type 'n' or 'c'\n")
+                print(f"What type of hint do you want to give? Type 'n' or 'c'\n")
 
                 valid_hint_type = False
                 while not valid_hint_type:
@@ -178,20 +169,17 @@ class Agent:
                     valid_hint_type = True
                 
                     # Choosing player target for hint
-                    print("Which player should be target for the hint?\n")
-                    print("Type '1' or '2'\n")
+                    print("Which player should be target for the hint? Type '1' or '2'\n")
                     player_hint_index = ((int(input(">>> ")) - 1) % 2) + 1
 
                     if hint_type_choice == 'n':
-                        print("What number should be hinted?\n")
-                        print("Type a number from '1' to '5'\n")
-                        hinted_number = (int(input(">>> ")) - 1) % 5
+                        print("What number should be hinted? Type a number from '1' to '5'\n")
+                        hinted_number = (int(input(">>> "))) % 5
 
                         state.players[state.player_turn].give_number_hint(state, player_hint_index, hinted_number)
                     
                     elif hint_type_choice == 'c':
-                        print("What color should be hinted?\n")
-                        print("Type 'r', 'b', 'g', 'y' or 'w'\n")
+                        print("What color should be hinted? Type 'r', 'b', 'g', 'y' or 'w'\n")
 
                         valid_color_hint = False
                         while not valid_color_hint:
