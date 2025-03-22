@@ -226,7 +226,7 @@ class Agent:
             self.play_card(state, play_card_index)
         # Hint move
         elif action == 1:
-            hint_type_choice, player_hint_index, hinted_value = evaluate_hint_move(state)
+            hint_type_choice, player_hint_index, hinted_value, _ = evaluate_hint_move(state)
             if hint_type_choice == "n":
                 self.give_number_hint(state, player_hint_index, hinted_value)
             elif hint_type_choice == "c":
