@@ -1,10 +1,30 @@
 from card import Card, Color
 from typing import List
 from state import State
+import numpy as np
+
 
 
 def choose_action(state):
-    pass
+
+    _, certainty_play = evaluate_play_move(state)
+    _, certainty_discard = evaluate_discard_move(state)
+    hint_type, hinted_player, hinted_value = evaluate_hint_move(state)
+
+    expected_outcome = [0,0,0]
+
+    #Outcome of playing a card
+    expected_outcome[0] = certainty_play - (1 - certainty_play)*1/(state.fuse_tokens)*len(state.board_cards)
+
+    #Outcome of discarding a card
+    expected_outcome[2] = certainty_discard*(state.max_hint_tokens - state.hint_tokens)/state.max_hint_tokens
+    
+    #Outcome of hinting an other player
+    expected_outcome[1] = state.hint_tokens/state.max_hint_tokens #*information gain
+    
+    best_action = np.argmax(expected_outcome) #0-> play card, 1-> hint, 2-> discard
+
+    return best_action
 
 
 def evaluate_play_move(state):
@@ -49,11 +69,42 @@ def evaluate_play_move(state):
                 max_value = g[i]
                 max_index = i
     
-    return max_index
+    certainty = e[max_index]
+
+    return max_index, certainty
 
 
 def evaluate_discard_move(state):
-    return 0
+    e: list[float] = []
+    priority: list[int] = []
+
+    #Look at all of the cards in the players hand
+    for i, card in enumerate(state.players[state.player_turn].card_in_hand):
+        e[i] = 0
+
+        #Compare the cards to cards, which are already played on the board pile
+        for played_cards in state.board_cards:
+            e[i] += card.probability_matrix[played_cards.color.value - 1][played_cards.number - 1]
+
+        #Card is surely already played on the board
+        if e[i] == 1:
+            priority[i] = 3
+        #Card is surely still needed
+        elif e[i] == 0:
+            priority[i] = 0
+        else:
+            #Card got a hint in the last turn
+            if card.hinted_number or card.hinted_color: 
+                priority = 1
+            #Probability of this card still needed
+            else:
+                priority = e[i] + 1
+
+    #Index of the card with the highest priority
+    discard_index = priority.index(max(priority))
+    certainty = e[discard_index]
+               
+    return discard_index, certainty
 
 
 def evaluate_hint_move(state: "State"):

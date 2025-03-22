@@ -207,7 +207,7 @@ class Agent:
 
         # Play move
         if action == 0:
-            play_card_index = evaluate_play_move(state)
+            play_card_index, _ = evaluate_play_move(state)
             self.play_card(state, play_card_index)
         # Hint move
         elif action == 1:
@@ -228,5 +228,5 @@ class Agent:
                 self.give_color_hint(state, player_hint_index, hinted_value)
         # Discard move
         elif action == 2:
-            discard_card_index = evaluate_discard_move(state)
+            discard_card_index, _ = evaluate_discard_move(state)
             self.discard_card(state, discard_card_index)
