@@ -124,13 +124,13 @@ def evaluate_hint_move(state: "State"):
             if card in state.playable_cards:
                 hint_prio += 5
 
-            # No hint received but useful in future
+            '''# No hint received but useful in future
             if (card.hinted_color and card.hinted_number) == False:  # No hint received yet
-                hint_prio += 3
+                hint_prio += 1'''
 
             # Give hints that require less tokens (if tokens are low)
-            if state.hint_tokens > 1:
-                hint_prio += 2
+            '''if state.hint_tokens > 1:
+                hint_prio += 2'''
 
         ## protect critical cards like 5
             if card.get_number() == 5 or card in state.discard_pile:
@@ -145,7 +145,7 @@ def evaluate_hint_move(state: "State"):
                 hint_prio -= 3
 
             #  hints that provide more value
-            if (card not in state.board_cards and card.get_number() == 1) or card.get_number() == 5:
+            if ( card.get_number() == 1  and card not in state.board_cards) or card.get_number() == 5:
                 hint_prio += 4
 
             # Compare with highest priority so far and update the best_hint

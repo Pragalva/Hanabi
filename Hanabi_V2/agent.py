@@ -92,8 +92,7 @@ class Agent:
                 card.hinted_excluded_colors.extend(c for c in Color if (c != color or c != Color.NO_COLOR))
                 print(f"{state.players[player_hint_index].player_name} has a {color} card in the position {card_index + 1}")
             else:
-                card.hinted_excluded_colors.append(color)
-                print(f"{state.players[player_hint_index].player_name} has a no {color} card")        
+                card.hinted_excluded_colors.append(color)       
         # Spend the hint token
         state.hint_tokens -= 1
 
@@ -109,7 +108,6 @@ class Agent:
                 print(f"{state.players[player_hint_index].player_name} has a {number} card in the position {card_index + 1}")
             else:
                 card.hinted_excluded_numbers.append(number)
-                print(f"{state.players[player_hint_index].player_name} has a no {number} card")
         
         # Spend the hint token
         state.hint_tokens -= 1
