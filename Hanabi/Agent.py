@@ -42,6 +42,9 @@ class Agent:
         self.hint_number_pending[hint_index] = hint
         card_for_hint = self.card_in_hand[hint_index]
         card_for_hint.set_number_hint(hint)'''
+    
+    def set_card_in_hand(self, current_state: "State"):
+        self.card_in_hand = current_state.hands[self.player_index]
     ############################################################################
 
     ###############################################################################

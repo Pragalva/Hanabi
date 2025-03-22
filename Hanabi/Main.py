@@ -32,6 +32,12 @@ for card in range(5):
 # Game loop
 while not state.termination_test():
     # Start of turn
+    #setting hands in agent as a lot of our functions use this value
+    player_0.set_card_in_hand(state)
+    player_1.set_card_in_hand(state)
+    player_2.set_card_in_hand(state)
+
+
     print(f"Turn of Player {state.player_turn}")
 
     # Real person player management
