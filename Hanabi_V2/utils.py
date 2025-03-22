@@ -30,7 +30,7 @@ def initialize_playable_cards() -> List["Card"]:
     for color in Color:
         if color == Color.NO_COLOR:
             continue
-        card = Card(0, color)
+        card = Card(1, color)
         playable_cards.append(card)
     
     return playable_cards
