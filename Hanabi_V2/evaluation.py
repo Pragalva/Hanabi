@@ -29,12 +29,12 @@ def choose_action(state):
 
 def evaluate_play_move(state):
     # Initialize score lists
-    g: list[float] = []
-    e: list[float] = []
-    priority: list[int] = []
+    g = [0] * len(state.players[state.player_turn].hand_cards)
+    e = [0] * len(state.players[state.player_turn].hand_cards)
+    priority = [0] * len(state.players[state.player_turn].hand_cards)
 
     # Evaluate how good is to play each card
-    for i, card in enumerate(state.players[state.player_turn].card_in_hand):
+    for i, card in enumerate(state.players[state.player_turn].hand_cards):
         # Evaluation component based on the probability matrix
         e[i] = 0
         for playable_card in state.playable_cards:
@@ -75,11 +75,11 @@ def evaluate_play_move(state):
 
 
 def evaluate_discard_move(state):
-    e: list[float] = []
-    priority: list[int] = []
+    e = [0] * len(state.players[state.player_turn].hand_cards)
+    priority = [0] * len(state.players[state.player_turn].hand_cards)
 
     #Look at all of the cards in the players hand
-    for i, card in enumerate(state.players[state.player_turn].card_in_hand):
+    for i, card in enumerate(state.players[state.player_turn].hand_cards):
         e[i] = 0
 
         #Compare the cards to cards, which are already played on the board pile
@@ -116,9 +116,14 @@ def evaluate_hint_move(state: "State"):
     player_evaluate_hint.pop(state.player_turn)
     player_hint_index = -1
 
+<<<<<<< Updated upstream
     for item in player_evaluate_hint:
         for i, card in enumerate(state.players[state.player_turn].card_in_hand):
             hint_prio = 0
+=======
+    for i, card in enumerate(state.players[state.player_turn].hand_cards):
+        hint_prio = 0
+>>>>>>> Stashed changes
 
             # Checking the card's playability
             if card in state.playable_cards:
