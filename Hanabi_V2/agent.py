@@ -30,7 +30,7 @@ class Agent:
 
         state.discard_pile.append(discarded_card)
 
-        print(f"{self.player_name} has discarded a {discarded_card.__repr__}\n")
+        print(f"{self.player_name} has discarded a {discarded_card.__repr__()}\n")
 
         # Refill the hint tokens
         if(state.hint_tokens < 8):
@@ -46,21 +46,36 @@ class Agent:
 
         print(f"{self.player_name} has played a {played_card.__repr__()}\n")
 
-        for card in state.playable_cards:
-            # Look for the card with the right color
-            if played_card.get_color() == card.get_color():
-                # Look for the card with the right number
-                if played_card.get_number() == (card.get_number() + 1):
-                    print(f"The {played_card.__repr__()} has been played succesfully\n")
+        # print(played_card)
+        # print(state.playable_cards)
 
-                    state.board_cards.append(played_card)
-                    state.playable_cards.remove(card)
-                    state.playable_cards.append(played_card)
-                else:
-                    print(f"The {played_card.__repr__()} couldn't be played succesfully\n")
+        if played_card in state.playable_cards:
+            print(f"The {played_card.__repr__()} has been played succesfully\n")
 
-                    state.fuse_tokens -= 1
-                    state.discard_pile.append(played_card)
+            state.board_cards.append(played_card)
+            state.playable_cards.remove(played_card)
+            state.playable_cards.append(Card(played_card.get_number() + 1, played_card.get_color()))
+        else:
+            print(f"The {played_card.__repr__()} couldn't be played succesfully\n")
+
+            state.fuse_tokens -= 1
+            state.discard_pile.append(played_card)
+
+        # for card in state.playable_cards:
+        #     # Look for the card with the right color
+        #     if played_card.get_color() == card.get_color():
+        #         # Look for the card with the right number
+        #         if played_card.get_number() == (card.get_number() + 1):
+        #             print(f"The {played_card.__repr__()} has been played succesfully\n")
+
+        #             state.board_cards.append(played_card)
+        #             state.playable_cards.remove(card)
+        #             state.playable_cards.append(played_card)
+        #         else:
+        #             print(f"The {played_card.__repr__()} couldn't be played succesfully\n")
+
+        #             state.fuse_tokens -= 1
+        #             state.discard_pile.append(played_card)
 
         self.draw_card(state)
 

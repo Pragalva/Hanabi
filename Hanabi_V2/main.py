@@ -27,7 +27,9 @@ while not termination_test(state):
     turn += 1
     print(f"TURN {turn}\n")
     print(f"{state.players[state.player_turn].player_name} is playing\n")
-    print(state.playable_cards)
+
+    # Print
+    # print(state.playable_cards)
 
     # Real person player management
     if state.player_turn == 0:
@@ -39,3 +41,5 @@ while not termination_test(state):
 
     # Change player's turn
     state.player_turn = (state.player_turn + 1) % 3
+
+print("GAME END!\n")

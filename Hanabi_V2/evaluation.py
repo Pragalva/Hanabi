@@ -159,7 +159,7 @@ def evaluate_hint_move(state: "State"):
     hint_value = -1
 
     hint_hand = state.players[player_hint_index].hand_cards
-    print(hint_hand)
+    #print(hint_hand)
     info_before = np.zeros((5,5,5))
 
     for idx, j in enumerate(hint_hand):
