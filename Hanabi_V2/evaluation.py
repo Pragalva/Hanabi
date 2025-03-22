@@ -9,7 +9,7 @@ def choose_action(state):
 
     _, certainty_play = evaluate_play_move(state)
     _, certainty_discard = evaluate_discard_move(state)
-    hint_type, hinted_player, hinted_value = evaluate_hint_move(state)
+    _, _, _, information_gain = evaluate_hint_move(state)
 
     expected_outcome = [0,0,0]
 
@@ -20,7 +20,7 @@ def choose_action(state):
     expected_outcome[2] = certainty_discard*(state.max_hint_tokens - state.hint_tokens)/state.max_hint_tokens
     
     #Outcome of hinting an other player
-    expected_outcome[1] = state.hint_tokens/state.max_hint_tokens #*information gain
+    expected_outcome[1] = state.hint_tokens/state.max_hint_tokens*information_gain
     
     best_action = np.argmax(expected_outcome) #0-> play card, 1-> hint, 2-> discard
 
@@ -95,10 +95,10 @@ def evaluate_discard_move(state):
         else:
             #Card got a hint in the last turn
             if card.hinted_number or card.hinted_color: 
-                priority = 1
+                priority[i] = 1
             #Probability of this card still needed
             else:
-                priority = e[i] + 1
+                priority[i] = e[i] + 1
 
     #Index of the card with the highest priority
     discard_index = priority.index(max(priority))
@@ -116,14 +116,9 @@ def evaluate_hint_move(state: "State"):
     player_evaluate_hint.pop(state.player_turn)
     player_hint_index = -1
 
-<<<<<<< Updated upstream
     for item in player_evaluate_hint:
-        for i, card in enumerate(state.players[state.player_turn].card_in_hand):
+        for i, card in enumerate(state.players[state.player_turn].hand_cards):
             hint_prio = 0
-=======
-    for i, card in enumerate(state.players[state.player_turn].hand_cards):
-        hint_prio = 0
->>>>>>> Stashed changes
 
             # Checking the card's playability
             if card in state.playable_cards:
@@ -163,12 +158,13 @@ def evaluate_hint_move(state: "State"):
     hint_choice ="o"
     hint_value = -1
 
-    hint_hand = state.players[player_hint_index].get_hand_cards()
-    info_before = 0
+    hint_hand = state.players[player_hint_index].hand_cards
+    print(hint_hand)
+    info_before = np.zeros((5,5,5))
 
-    for j in hint_hand:
+    for idx, j in enumerate(hint_hand):
         j.evaluate_probability_matrix(state)
-        info_before += j.probability_matrix
+        info_before[:, :, idx] = j.probability_matrix
 
 
     hint_card = hint_hand.pop(best_hint)
@@ -192,8 +188,8 @@ def evaluate_hint_move(state: "State"):
     if color_hint_priority > number_hint_priority:
         hint_choice = "c"
         hint_value = hint_card.get_color()
-        hint_array=[1,2,3,4,5]
-        hint_array.pop(hint_value-1)
+        hint_array=[Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.WHITE]
+        hint_array.remove(hint_value)
         hint_card.hinted_excluded_colors = hint_array
         hint_card.set_color_hint(True)
 
@@ -206,13 +202,19 @@ def evaluate_hint_move(state: "State"):
         hint_card.hinted_excluded_numbers = hint_array
         hint_card.set_number_hint(True)
 
-    info_after = 0
-    for j in hint_hand:
-        j.evaluate_probability_matrix(state)
-        info_after += j.probability_matrix
+    info_after = np.zeros((5,5,5))
 
-    
-    Total_info = info_after-info_before
+    hint_hand.append(hint_card)
+    for idx, j in enumerate(hint_hand):
+        j.evaluate_probability_matrix(state)
+        info_before[:, :, idx] = j.probability_matrix
+
+    Total_info = 0.0
+
+    for i in range(5):
+        for j in range(5):
+            for k in range(5):
+                Total_info = abs(info_after[i,j,k]-info_before[i,j,k])
         
-    return hint_choice,player_hint_index, hint_value
+    return hint_choice,player_hint_index, hint_value, Total_info
 

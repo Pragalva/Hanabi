@@ -50,7 +50,7 @@ class Agent:
             # Look for the card with the right color
             if played_card.get_color() == card.get_color():
                 # Look for the card with the right number
-                if played_card.get_number() == card.get_number() + 1:
+                if played_card.get_number() == (card.get_number() + 1):
                     print(f"The {played_card.__repr__()} has been played succesfully\n")
 
                     state.board_cards.append(played_card)
