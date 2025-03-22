@@ -112,42 +112,102 @@ def evaluate_hint_move(state: "State"):
     ##Function to evaluate which hint to give to the partner.
     highest_prio = -1
     best_hint = -1
+    player_evaluate_hint = [0,1,2]
+    player_evaluate_hint.pop(state.player_turn)
+    player_hint_index = -1
 
-    for i, card in enumerate(state.players[state.player_turn].card_in_hand):
-        hint_prio = 0
+    for item in player_evaluate_hint:
+        for i, card in enumerate(state.players[state.player_turn].card_in_hand):
+            hint_prio = 0
 
-        # Checking the card's playability
-        if card in state.playable_cards:
-            hint_prio += 5
+            # Checking the card's playability
+            if card in state.playable_cards:
+                hint_prio += 5
 
-        # No hint received but useful in future
-        if (card.hinted_color and card.hinted_number) == False:  # No hint received yet
-            hint_prio += 3
+            # No hint received but useful in future
+            if (card.hinted_color and card.hinted_number) == False:  # No hint received yet
+                hint_prio += 3
 
-        # Give hints that require less tokens (if tokens are low)
-        if state.hint_tokens > 1:
-            hint_prio += 2
+            # Give hints that require less tokens (if tokens are low)
+            if state.hint_tokens > 1:
+                hint_prio += 2
 
-      ## protect critical cards like 5
-        if card.get_number() == 5 or card in state.discard_pile:
-            hint_prio += 3
+        ## protect critical cards like 5
+            if card.get_number() == 5 or card in state.discard_pile:
+                hint_prio += 3
 
-        # partner knows either color/number
-        if card.hinted_color or card.hinted_number:
-            hint_prio += 1
+            # partner knows either color/number
+            if card.hinted_color or card.hinted_number:
+                hint_prio += 1
 
-        # If the card should be discarded soon, avoid giving hints about it
-        if card in state.board_cards:
-            hint_prio -= 3
+            # If the card should be discarded soon, avoid giving hints about it
+            if card in state.board_cards:
+                hint_prio -= 3
 
-        #  hints that provide more value
-        if (card not in state.board_cards and card.get_number() == 1) or card.get_number() == 5:
-            hint_prio += 4
+            #  hints that provide more value
+            if (card not in state.board_cards and card.get_number() == 1) or card.get_number() == 5:
+                hint_prio += 4
 
-        # Compare with highest priority so far and update the best_hint
-        if hint_prio > highest_prio:
-            highest_prio = hint_prio
-            best_hint = i
+            # Compare with highest priority so far and update the best_hint
+            if hint_prio > highest_prio and ( not (card.hinted_color and card.hinted_number)):
+                highest_prio = hint_prio
+                best_hint = i
+                player_hint_index = item
 
-    return best_hint
+    #Logic to determine which hint to give
+    hint_choice ="o"
+    hint_value = -1
+
+    hint_hand = state.players[player_hint_index].get_hand_cards()
+    info_before = 0
+
+    for j in hint_hand:
+        j.evaluate_probability_matrix(state)
+        info_before += j.probability_matrix
+
+
+    hint_card = hint_hand.pop(best_hint)
+
+    color_hint_priority = 0
+    number_hint_priority = 0
+
+    if hint_card.get_number() == 5:
+        number_hint_priority = 5
+
+    else:
+        for x in hint_hand:
+            if (x.get_color() == hint_card.get_color()):
+                color_hint_priority -= 1
+            if (x.get_number () == hint_card.get_number()):
+                if x is state.playable_cards:
+                    number_hint_priority += 1
+                else:
+                    number_hint_priority -= 1
+
+    if color_hint_priority > number_hint_priority:
+        hint_choice = "c"
+        hint_value = hint_card.get_color()
+        hint_array=[1,2,3,4,5]
+        hint_array.pop(hint_value-1)
+        hint_card.hinted_excluded_colors = hint_array
+        hint_card.set_color_hint(True)
+
+    elif color_hint_priority <= number_hint_priority:
+        hint_choice = "n"
+        hint_value = hint_card.get_number()
+
+        hint_array=[1,2,3,4,5]
+        hint_array.pop(hint_value-1)
+        hint_card.hinted_excluded_numbers = hint_array
+        hint_card.set_number_hint(True)
+
+    info_after = 0
+    for j in hint_hand:
+        j.evaluate_probability_matrix(state)
+        info_after += j.probability_matrix
+
+    
+    Total_info = info_after-info_before
+        
+    return hint_choice,player_hint_index, hint_value
 
