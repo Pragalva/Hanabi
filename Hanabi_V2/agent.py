@@ -93,7 +93,7 @@ class Agent:
                 print(f"{state.players[player_hint_index].player_name} has a {color} card in the position {card_index + 1}")
             else:
                 card.hinted_excluded_colors.append(color)
-        
+                print(f"{state.players[player_hint_index].player_name} has a no {color} card")        
         # Spend the hint token
         state.hint_tokens -= 1
 
@@ -102,8 +102,6 @@ class Agent:
 
     def give_number_hint(self, state: "State", player_hint_index: int, number: int):
         # Give hint
-        print(f"{self.player_name} has given a color hint to {state.players[player_hint_index].player_name}\n")
-
         for card_index, card in enumerate(state.players[player_hint_index].hand_cards):
             if card.get_number() == number:
                 card.set_number_hint(True)
@@ -111,6 +109,7 @@ class Agent:
                 print(f"{state.players[player_hint_index].player_name} has a {number} card in the position {card_index + 1}")
             else:
                 card.hinted_excluded_numbers.append(number)
+                print(f"{state.players[player_hint_index].player_name} has a no {number} card")
         
         # Spend the hint token
         state.hint_tokens -= 1
