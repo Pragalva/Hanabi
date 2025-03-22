@@ -62,11 +62,13 @@ class Card:
                     visible_cards.append(card)
 
         # Remove possible cards from virtual deck based on hints
+        list_of_deck_cards_copy = list_of_deck_cards.copy()
         for card in list_of_deck_cards:
             if (card.get_number() in self.hinted_excluded_numbers) or (card.get_color() in self.hinted_excluded_colors):
-                list_of_deck_cards.remove(card)
+                list_of_deck_cards_copy.remove(card)
+        list_of_deck_cards = list_of_deck_cards_copy.copy()
         
-        # Remove possible cards from virtual deck based on visible cards ##################
+        # Remove possible cards from virtual deck based on visible cards
         list_of_deck_cards_copy = list_of_deck_cards.copy()
         for card in list_of_deck_cards:
             for visible_card in visible_cards:
