@@ -111,7 +111,7 @@ def evaluate_discard_move(state):
                
     return discard_index, certainty
 
-
+'''
 def evaluate_hint_move(state: "State"):
 
     ##Function to evaluate which hint to give to the partner.
@@ -129,13 +129,13 @@ def evaluate_hint_move(state: "State"):
             if card in state.playable_cards:
                 hint_prio += 5
 
-            '''# No hint received but useful in future
-            if (card.hinted_color and card.hinted_number) == False:  # No hint received yet
-                hint_prio += 1'''
+            # No hint received but useful in future
+            #if (card.hinted_color and card.hinted_number) == False:  # No hint received yet
+             #   hint_prio += 1
 
             # Give hints that require less tokens (if tokens are low)
-            '''if state.hint_tokens > 1:
-                hint_prio += 2'''
+            #if state.hint_tokens > 1:
+             #   hint_prio += 2
 
         ## protect critical cards like 5
             if card.get_number() == 5 or card in state.discard_pile:
@@ -224,4 +224,101 @@ def evaluate_hint_move(state: "State"):
     print("Player hint index: ", player_hint_index, " Hint value: ", hint_value)
         
     return hint_choice,player_hint_index, hint_value, Total_info
+'''
 
+def evaluate_hint_move(state: "State"):
+    #initialize the hint choice, player to be hinted, hint value and information gain
+    hint_choice = "o"
+    player_hint_index = -1
+    hint_value = -1
+    information_gain = 0
+
+    #Look at the other players
+    other_players = [0,1,2]
+    other_players.pop(state.player_turn)
+
+    max_num_hint_cards = 0
+
+    #Who to be hinted?
+    for j, players in enumerate(other_players):
+        num_hint_cards = 0
+        for i, card in enumerate(state.players[players].hand_cards):
+            #card is playable
+            if card in state.playable_cards:
+                num_hint_cards += 1
+            #card is unique
+            if card.get_number() == 5 or card in state.discard_pile:
+                num_hint_cards += 1
+            #Is card already hinted?
+            if card.hinted_number & card.hinted_color:
+                num_hint_cards -= 1
+        #take the player with the higher number of hintable cards
+        if num_hint_cards > max_num_hint_cards:
+            player_hint_index = players
+            max_num_hint_cards = num_hint_cards
+
+    #Which hint is the best?
+
+    max_ratio_color = 0
+    max_color = Color.NO_COLOR
+
+    #possible color hints:
+    for colors in Color:
+        num_hint_cards_color_playable = 0
+        num_hint_cards_color_nonplayable = 0
+        for i, card in enumerate(state.players[player_hint_index].hand_cards):
+            #Is card already hinted?
+            if card.get_color() == colors:
+                if (card.hinted_color == False):
+                    if card in state.playable_cards:
+                        num_hint_cards_color_playable += 1
+                    else:
+                        num_hint_cards_color_nonplayable += 1
+                    #card is unique
+                    if card in state.discard_pile:
+                        num_hint_cards_color_playable += 1    
+        #check if there are even cards of this color            
+        if (num_hint_cards_color_playable > 0) | (num_hint_cards_color_nonplayable > 0):
+            ratio_color = num_hint_cards_color_playable/(num_hint_cards_color_playable + num_hint_cards_color_nonplayable)
+        else:
+            ratio_color = 0
+        if ratio_color > max_ratio_color:
+            max_ratio_color = ratio_color
+            max_color = colors
+
+    max_ratio_number = 0
+    max_number = 0
+
+    #possible number hints:
+    for numbers in range(1,6):
+        num_hint_cards_number_playable = 0
+        num_hint_cards_number_nonplayable = 0
+        for i, card in enumerate(state.players[player_hint_index].hand_cards):
+            #Is card already hinted?
+            if card.get_number() == numbers:
+                if (card.hinted_number == False):
+                    if card in state.playable_cards:
+                        num_hint_cards_number_playable += 1
+                    else:
+                        num_hint_cards_number_nonplayable += 1
+                    #card is unique
+                    if card in state.discard_pile:
+                        num_hint_cards_number_playable += 1   
+        #check if there are even cards of this number
+        if (num_hint_cards_number_playable > 0) | (num_hint_cards_number_nonplayable > 0):
+            ratio_number = num_hint_cards_number_playable/(num_hint_cards_number_playable + num_hint_cards_number_nonplayable)
+        else:
+            ratio_number = 0
+        if ratio_number > max_ratio_number:
+            max_ratio_number = ratio_number
+            max_number = numbers
+
+    if max_ratio_color > max_ratio_number:
+        hint_choice = "c"
+        hint_value = max_color
+    else:
+        hint_choice = "n"
+        hint_value = max_number        
+
+
+    return hint_choice, player_hint_index, hint_value, 0

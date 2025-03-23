@@ -6,6 +6,7 @@ number_of_games = 100
 score = 0
 added_score = 0
 max_score = 0
+games_lost = 0
 
 for i in range(number_of_games):
     # Initilizing the Players
@@ -49,11 +50,12 @@ for i in range(number_of_games):
         score = len(state.board_cards)
     else:
         score = 0
-        
+        games_lost += 1
+
     if score > max_score:
         max_score = score
     
     added_score += score
     print("GAME END!\n")
 
-print("Average score: ", added_score/number_of_games, "\n Max score: ", max_score)
+print("Average score: ", added_score/number_of_games, "\n Max score: ", max_score, "\n Games lost: ", games_lost)
