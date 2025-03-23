@@ -2,7 +2,7 @@ from agent import Agent
 from state import State, update_all_probability_matrices
 from utils import termination_test
 
-number_of_games = 100
+number_of_games = 500
 score = 0
 added_score = 0
 max_score = 0
@@ -59,4 +59,4 @@ for i in range(number_of_games):
     added_score += score
     print("GAME END!\n")
 
-print("Average score: ", added_score/number_of_games, "\n Max score: ", max_score, "\n Games lost: ", games_lost)
+print("Average score: ", added_score/number_of_games, "\nMax score: ", max_score, "\nPercentage of games lost: ", games_lost/number_of_games*100, "%")

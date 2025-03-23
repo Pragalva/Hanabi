@@ -7,14 +7,14 @@ import numpy as np
 
 def choose_action(state):
 
-    _, certainty_play = evaluate_play_move(state)
-    _, certainty_discard = evaluate_discard_move(state)
+    play_index, certainty_play = evaluate_play_move(state)
+    discard_index, certainty_discard = evaluate_discard_move(state)
     _, _, _, ratio = evaluate_hint_move(state)
 
     expected_outcome = [0,0,0]
 
     #Outcome of playing a card
-    expected_outcome[0] = certainty_play - (1 - certainty_play)*len(state.board_cards)#/(state.fuse_tokens)
+    expected_outcome[0] = certainty_play - (1 - certainty_play)*len(state.board_cards) #/(state.fuse_tokens)
 
     #Outcome of discarding a card
     expected_outcome[2] = certainty_discard*(state.max_hint_tokens - state.hint_tokens)/state.max_hint_tokens
@@ -22,6 +22,8 @@ def choose_action(state):
     #Outcome of hinting an other player
     if state.hint_tokens > 0:
         expected_outcome[1] = state.hint_tokens/state.max_hint_tokens*ratio 
+        if play_index == discard_index:
+            expected_outcome[1] = 100
     else:
         expected_outcome[1] = -100
 
@@ -147,7 +149,7 @@ def evaluate_hint_move(state: "State"):
     #Which hint is the best?
 
     max_ratio_color = 0
-    max_color = Color.NO_COLOR
+    max_color = Color.RED
 
     #possible color hints:
     for colors in Color:
@@ -174,7 +176,7 @@ def evaluate_hint_move(state: "State"):
             max_color = colors
 
     max_ratio_number = 0
-    max_number = 0
+    max_number = 1
 
     #possible number hints:
     for numbers in range(1,6):

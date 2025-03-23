@@ -24,7 +24,7 @@ class Card:
         self.hinted_excluded_colors: List["Color"] = []
         self.probability_matrix: List[List[float]]
     def __repr__(self):
-        return f"{self.color} {self.number}"
+        return f"{self.color.name} {self.number}"
     def __eq__(self, other):
         return isinstance(other, Card) and self.number == other.number and self.color == other.color
 

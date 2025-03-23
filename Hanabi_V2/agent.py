@@ -84,15 +84,19 @@ class Agent:
 
     def give_color_hint(self, state: "State", player_hint_index: int, color: "Color"):
         # Give hint
-        print(f"{self.player_name} has given a color hint to {state.players[player_hint_index].player_name}\n")
+        num_cards = 0
 
         for card_index, card in enumerate(state.players[player_hint_index].hand_cards):
             if card.get_color() == color:
+                num_cards += 1
                 card.set_color_hint(True)
                 card.hinted_excluded_colors.extend(c for c in Color if (c != color and c != Color.NO_COLOR))
-                print(f"{state.players[player_hint_index].player_name} has a {color} card in the position {card_index + 1}")
+                print(f"{state.players[player_hint_index].player_name} has a {color.name} card in the position {card_index + 1}")
             else:
-                card.hinted_excluded_colors.append(color)       
+                card.hinted_excluded_colors.append(color)   
+
+        if num_cards == 0:
+            print(f"{state.players[player_hint_index].player_name} has no {color.name} cards\n")    
         # Spend the hint token
         state.hint_tokens -= 1
 
@@ -101,14 +105,20 @@ class Agent:
 
     def give_number_hint(self, state: "State", player_hint_index: int, number: int):
         # Give hint
+        num_cards = 0
+
         for card_index, card in enumerate(state.players[player_hint_index].hand_cards):
             if card.get_number() == number:
+                num_cards += 1
                 card.set_number_hint(True)
                 card.hinted_excluded_numbers.extend(n for n in [1, 2, 3, 4, 5] if n != number)
                 print(f"{state.players[player_hint_index].player_name} has a {number} card in the position {card_index + 1}")
             else:
                 card.hinted_excluded_numbers.append(number)
         
+        if num_cards == 0:
+            print(f"{state.players[player_hint_index].player_name} has no {number} cards\n")
+
         # Spend the hint token
         state.hint_tokens -= 1
 
