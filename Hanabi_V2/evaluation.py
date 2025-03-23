@@ -21,7 +21,7 @@ def choose_action(state):
     
     #Outcome of hinting an other player
     if state.hint_tokens > 0:
-        expected_outcome[1] = state.hint_tokens/state.max_hint_tokens*information_gain
+        expected_outcome[1] = state.hint_tokens/state.max_hint_tokens#*information_gain
     else:
         expected_outcome[1] = -100
 
@@ -98,7 +98,7 @@ def evaluate_discard_move(state):
         elif e[i] == 0:
             priority[i] = 0
         else:
-            #Card got a hint in the last turn
+            #Cards with information
             if card.hinted_number or card.hinted_color: 
                 priority[i] = 1
             #Probability of this card still needed
@@ -122,7 +122,7 @@ def evaluate_hint_move(state: "State"):
     player_hint_index = -1
 
     for item in player_evaluate_hint:
-        for i, card in enumerate(state.players[item].hand_cards):
+        for i, card in enumerate(state.players[state.player_turn].hand_cards):
             hint_prio = 0
 
             # Checking the card's playability
@@ -176,6 +176,7 @@ def evaluate_hint_move(state: "State"):
 
 
     hint_card = hint_hand[best_hint]
+    print("Hint Card", hint_card)
 
     color_hint_priority = 1
     number_hint_priority = 0
@@ -220,6 +221,7 @@ def evaluate_hint_move(state: "State"):
         for j in range(5):
             for k in range(5):
                 Total_info = abs(info_after[i,j,k]-info_before[i,j,k])
+    print("Player hint index: ", player_hint_index, " Hint value: ", hint_value)
         
     return hint_choice,player_hint_index, hint_value, Total_info
 
