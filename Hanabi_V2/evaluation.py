@@ -143,10 +143,10 @@ def evaluate_hint_move(state: "State"):
 
             # partner knows either color/number
             if card.hinted_color or card.hinted_number:
-                hint_prio += 1
-
-            if card.hinted_color and card.hinted_number:
                 hint_prio -= 100
+
+            #if card.hinted_color and card.hinted_number:
+                #hint_prio -= 100
 
             # If the card should be discarded soon, avoid giving hints about it
             if card in state.board_cards:
@@ -191,11 +191,7 @@ def evaluate_hint_move(state: "State"):
             if (x.get_color() == hint_card.get_color()):
                 color_hint_priority -= 1
             
-    if hint_card.hinted_color:
-        hint_choice = 'n'
-    elif hint_card.hinted_number:
-        hint_choice ='c'
-    elif color_hint_priority > number_hint_priority:
+    if color_hint_priority > number_hint_priority:
         hint_choice = "c"
         hint_value = hint_card.get_color()
         hint_array=[Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.WHITE]
