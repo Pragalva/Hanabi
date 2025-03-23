@@ -154,7 +154,7 @@ def evaluate_hint_move(state: "State"):
                 hint_prio += 4
 
             # Compare with highest priority so far and update the best_hint
-            if hint_prio > highest_prio and ( not (card.hinted_color and card.hinted_number)):
+            if hint_prio > highest_prio and (not (card.hinted_color or card.hinted_number)):
                 highest_prio = hint_prio
                 best_hint = i
                 player_hint_index = item
@@ -182,13 +182,14 @@ def evaluate_hint_move(state: "State"):
 
     else:
         for x in hint_hand:
-            if (x.get_color() == hint_card.get_color()):
-                color_hint_priority -= 1
             if (x.get_number () == hint_card.get_number()):
                 if x is state.playable_cards:
                     number_hint_priority += 1
                 else:
                     number_hint_priority -= 1
+            if (x.get_color() == hint_card.get_color()):
+                color_hint_priority -= 1
+            
 
     if color_hint_priority > number_hint_priority:
         hint_choice = "c"
