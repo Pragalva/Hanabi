@@ -172,10 +172,10 @@ def evaluate_hint_move(state: "State"):
         info_before[:, :, idx] = j.probability_matrix
 
 
-    hint_card = hint_hand.pop(best_hint)
+    hint_card = hint_hand[best_hint]
 
-    color_hint_priority = 0
-    number_hint_priority = 0
+    color_hint_priority = 1
+    number_hint_priority = -1
 
     if hint_card.get_number() == 5:
         number_hint_priority = 5
@@ -210,7 +210,6 @@ def evaluate_hint_move(state: "State"):
 
     info_after = np.zeros((5,5,5))
 
-    hint_hand.append(hint_card)
     for idx, j in enumerate(hint_hand):
         j.evaluate_probability_matrix(state)
         info_before[:, :, idx] = j.probability_matrix
