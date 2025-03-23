@@ -189,7 +189,8 @@ class Agent:
                             if hinted_color not in ('r', 'b', 'g', 'y', 'w'):
                                 print("Invalid action! Please try again\n")
                                 continue
-                            valid_hint_type = True
+                            valid_color_hint = True
+                            print("passato")
 
                             if hinted_color == 'r':
                                 hinted_color = Color.RED
