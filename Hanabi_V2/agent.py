@@ -89,7 +89,7 @@ class Agent:
         for card_index, card in enumerate(state.players[player_hint_index].hand_cards):
             if card.get_color() == color:
                 card.set_color_hint(True)
-                card.hinted_excluded_colors.extend(c for c in Color if (c != color or c != Color.NO_COLOR))
+                card.hinted_excluded_colors.extend(c for c in Color if (c != color and c != Color.NO_COLOR))
                 print(f"{state.players[player_hint_index].player_name} has a {color} card in the position {card_index + 1}")
             else:
                 card.hinted_excluded_colors.append(color)       
