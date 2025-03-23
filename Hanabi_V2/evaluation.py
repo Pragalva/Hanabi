@@ -9,24 +9,23 @@ def choose_action(state):
 
     _, certainty_play = evaluate_play_move(state)
     _, certainty_discard = evaluate_discard_move(state)
-    _, _, _, information_gain = evaluate_hint_move(state)
+    _, _, _, ratio = evaluate_hint_move(state)
 
     expected_outcome = [0,0,0]
 
     #Outcome of playing a card
-    expected_outcome[0] = certainty_play - (1 - certainty_play)*1/(state.fuse_tokens) #*len(state.board_cards)
+    expected_outcome[0] = certainty_play - (1 - certainty_play)*1/(state.fuse_tokens)*len(state.board_cards)
 
     #Outcome of discarding a card
     expected_outcome[2] = certainty_discard*(state.max_hint_tokens - state.hint_tokens)/state.max_hint_tokens
     
     #Outcome of hinting an other player
     if state.hint_tokens > 0:
-        expected_outcome[1] = state.hint_tokens/state.max_hint_tokens#*information_gain
+        expected_outcome[1] = state.hint_tokens/state.max_hint_tokens*ratio 
     else:
         expected_outcome[1] = -100
 
     print("Expected outcome: ", expected_outcome)
-    print("Information gain: ", information_gain)
     best_action = np.argmax(expected_outcome) #0-> play card, 1-> hint, 2-> discard
 
     return best_action
@@ -75,6 +74,7 @@ def evaluate_play_move(state):
                 max_index = i
     
     certainty = e[max_index]
+    print("Best play card: ", state.players[state.player_turn].hand_cards[max_index])
 
     return max_index, certainty
 
@@ -108,6 +108,8 @@ def evaluate_discard_move(state):
     #Index of the card with the highest priority
     discard_index = priority.index(max(priority))
     certainty = e[discard_index]
+
+    print("Best discard card: ", state.players[state.player_turn].hand_cards[discard_index])
                
     return discard_index, certainty
 
@@ -231,7 +233,7 @@ def evaluate_hint_move(state: "State"):
     hint_choice = "o"
     player_hint_index = -1
     hint_value = -1
-    information_gain = 0
+    ratio = 0
 
     #Look at the other players
     other_players = [0,1,2]
@@ -302,7 +304,7 @@ def evaluate_hint_move(state: "State"):
                     else:
                         num_hint_cards_number_nonplayable += 1
                     #card is unique
-                    if card in state.discard_pile:
+                    if (card in state.discard_pile) or (card.get_number() == 5):
                         num_hint_cards_number_playable += 1   
         #check if there are even cards of this number
         if (num_hint_cards_number_playable > 0) | (num_hint_cards_number_nonplayable > 0):
@@ -316,9 +318,11 @@ def evaluate_hint_move(state: "State"):
     if max_ratio_color > max_ratio_number:
         hint_choice = "c"
         hint_value = max_color
+        ratio = max_ratio_color
     else:
         hint_choice = "n"
-        hint_value = max_number        
+        hint_value = max_number
+        ratio = max_ratio_number        
 
 
-    return hint_choice, player_hint_index, hint_value, 0
+    return hint_choice, player_hint_index, hint_value, ratio

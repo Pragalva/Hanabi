@@ -50,6 +50,7 @@ for i in range(number_of_games):
         score = len(state.board_cards)
     else:
         score = 0
+        #score = len(state.board_cards)
         games_lost += 1
 
     if score > max_score:
