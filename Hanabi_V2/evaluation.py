@@ -20,7 +20,10 @@ def choose_action(state):
     expected_outcome[2] = certainty_discard*(state.max_hint_tokens - state.hint_tokens)/state.max_hint_tokens
     
     #Outcome of hinting an other player
-    expected_outcome[1] = state.hint_tokens/state.max_hint_tokens*information_gain
+    if state.hint_tokens > 0:
+        expected_outcome[1] = state.hint_tokens/state.max_hint_tokens*information_gain
+    else:
+        expected_outcome[1] = -100
 
     print("Expected outcome: ", expected_outcome)
     print("Information gain: ", information_gain)
