@@ -14,7 +14,7 @@ def choose_action(state):
     expected_outcome = [0,0,0]
 
     #Outcome of playing a card
-    expected_outcome[0] = certainty_play - (1 - certainty_play)*1/(state.fuse_tokens)*len(state.board_cards)
+    expected_outcome[0] = certainty_play - (1 - certainty_play)*len(state.board_cards)#/(state.fuse_tokens)
 
     #Outcome of discarding a card
     expected_outcome[2] = certainty_discard*(state.max_hint_tokens - state.hint_tokens)/state.max_hint_tokens
@@ -112,121 +112,6 @@ def evaluate_discard_move(state):
     print("Best discard card: ", state.players[state.player_turn].hand_cards[discard_index])
                
     return discard_index, certainty
-
-'''
-def evaluate_hint_move(state: "State"):
-
-    ##Function to evaluate which hint to give to the partner.
-    highest_prio = -1
-    best_hint = -1
-    player_evaluate_hint = [0,1,2]
-    player_evaluate_hint.pop(state.player_turn)
-    player_hint_index = -1
-
-    for item in player_evaluate_hint:
-        for i, card in enumerate(state.players[state.player_turn].hand_cards):
-            hint_prio = 0
-
-            # Checking the card's playability
-            if card in state.playable_cards:
-                hint_prio += 5
-
-            # No hint received but useful in future
-            #if (card.hinted_color and card.hinted_number) == False:  # No hint received yet
-             #   hint_prio += 1
-
-            # Give hints that require less tokens (if tokens are low)
-            #if state.hint_tokens > 1:
-             #   hint_prio += 2
-
-        ## protect critical cards like 5
-            if card.get_number() == 5 or card in state.discard_pile:
-                hint_prio += 3
-
-            # partner knows either color/number
-            if card.hinted_color or card.hinted_number:
-                hint_prio -= 100
-
-            #if card.hinted_color and card.hinted_number:
-                #hint_prio -= 100
-
-            # If the card should be discarded soon, avoid giving hints about it
-            if card in state.board_cards:
-                hint_prio -= 3
-
-            #  hints that provide more value
-            #if ( card.get_number() == 1  and card not in state.board_cards) or card.get_number() == 5:
-                #hint_prio += 4
-
-            # Compare with highest priority so far and update the best_hint
-            if hint_prio > highest_prio:
-                highest_prio = hint_prio
-                best_hint = i
-                player_hint_index = item
-
-    #Logic to determine which hint to give
-    hint_choice ="o"
-    hint_value = -1
-
-    hint_hand = state.players[player_hint_index].hand_cards
-    #print(hint_hand)
-    info_before = np.zeros((5,5,5))
-
-    for idx, j in enumerate(hint_hand):
-        j.evaluate_probability_matrix(state)
-        info_before[:, :, idx] = j.probability_matrix
-
-
-    hint_card = hint_hand[best_hint]
-    print("Hint Card", hint_card)
-
-    color_hint_priority = 1
-    number_hint_priority = 0
-
-    if hint_card.get_number() == 5:
-        number_hint_priority = 5
-
-    else:
-        for x in hint_hand:
-            if (x.get_number () == hint_card.get_number()):
-                if x is state.playable_cards:
-                    number_hint_priority += 1
-            if (x.get_color() == hint_card.get_color()):
-                color_hint_priority -= 1
-            
-    if color_hint_priority > number_hint_priority:
-        hint_choice = "c"
-        hint_value = hint_card.get_color()
-        hint_array=[Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.WHITE]
-        hint_array.remove(hint_value)
-        hint_card.hinted_excluded_colors = hint_array
-        hint_card.set_color_hint(True)
-
-    elif color_hint_priority <= number_hint_priority:
-        hint_choice = "n"
-        hint_value = hint_card.get_number()
-
-        hint_array=[1,2,3,4,5]
-        hint_array.pop(hint_value-1)
-        hint_card.hinted_excluded_numbers = hint_array
-        hint_card.set_number_hint(True)
-
-    info_after = np.zeros((5,5,5))
-
-    for idx, j in enumerate(hint_hand):
-        j.evaluate_probability_matrix(state)
-        info_before[:, :, idx] = j.probability_matrix
-
-    Total_info = 0.0
-
-    for i in range(5):
-        for j in range(5):
-            for k in range(5):
-                Total_info = abs(info_after[i,j,k]-info_before[i,j,k])
-    print("Player hint index: ", player_hint_index, " Hint value: ", hint_value)
-        
-    return hint_choice,player_hint_index, hint_value, Total_info
-'''
 
 def evaluate_hint_move(state: "State"):
     #initialize the hint choice, player to be hinted, hint value and information gain
