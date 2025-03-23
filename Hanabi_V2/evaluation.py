@@ -122,7 +122,7 @@ def evaluate_hint_move(state: "State"):
     player_hint_index = -1
 
     for item in player_evaluate_hint:
-        for i, card in enumerate(state.players[state.player_turn].hand_cards):
+        for i, card in enumerate(state.players[item].hand_cards):
             hint_prio = 0
 
             # Checking the card's playability
