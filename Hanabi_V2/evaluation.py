@@ -145,16 +145,19 @@ def evaluate_hint_move(state: "State"):
             if card.hinted_color or card.hinted_number:
                 hint_prio += 1
 
+            if card.hinted_color and card.hinted_number:
+                hint_prio -= 100
+
             # If the card should be discarded soon, avoid giving hints about it
             if card in state.board_cards:
                 hint_prio -= 3
 
             #  hints that provide more value
-            if ( card.get_number() == 1  and card not in state.board_cards) or card.get_number() == 5:
-                hint_prio += 4
+            #if ( card.get_number() == 1  and card not in state.board_cards) or card.get_number() == 5:
+                #hint_prio += 4
 
             # Compare with highest priority so far and update the best_hint
-            if hint_prio > highest_prio and (not (card.hinted_color or card.hinted_number)):
+            if hint_prio > highest_prio:
                 highest_prio = hint_prio
                 best_hint = i
                 player_hint_index = item
@@ -175,7 +178,7 @@ def evaluate_hint_move(state: "State"):
     hint_card = hint_hand[best_hint]
 
     color_hint_priority = 1
-    number_hint_priority = -1
+    number_hint_priority = 0
 
     if hint_card.get_number() == 5:
         number_hint_priority = 5
@@ -185,13 +188,14 @@ def evaluate_hint_move(state: "State"):
             if (x.get_number () == hint_card.get_number()):
                 if x is state.playable_cards:
                     number_hint_priority += 1
-                else:
-                    number_hint_priority -= 1
             if (x.get_color() == hint_card.get_color()):
                 color_hint_priority -= 1
             
-
-    if color_hint_priority > number_hint_priority:
+    if hint_card.hinted_color:
+        hint_choice = 'n'
+    elif hint_card.hinted_number:
+        hint_choice ='c'
+    elif color_hint_priority > number_hint_priority:
         hint_choice = "c"
         hint_value = hint_card.get_color()
         hint_array=[Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.WHITE]
