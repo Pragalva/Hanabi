@@ -14,7 +14,7 @@ def choose_action(state):
     expected_outcome = [0,0,0]
 
     #Outcome of playing a card
-    expected_outcome[0] = certainty_play - 2*(1 - certainty_play)*len(state.board_cards)#/(state.fuse_tokens)
+    expected_outcome[0] = certainty_play - (1 - certainty_play)*len(state.board_cards)/(state.fuse_tokens)
 
     #Outcome of discarding a card
     expected_outcome[2] = certainty_discard*(state.max_hint_tokens - state.hint_tokens)/state.max_hint_tokens
