@@ -14,7 +14,7 @@ def choose_action(state):
     expected_outcome = [0,0,0]
 
     #Outcome of playing a card
-    expected_outcome[0] = certainty_play - (1 - certainty_play)*len(state.board_cards) #/(state.fuse_tokens)
+    expected_outcome[0] = certainty_play - 2*(1 - certainty_play)*len(state.board_cards)#/(state.fuse_tokens)
 
     #Outcome of discarding a card
     expected_outcome[2] = certainty_discard*(state.max_hint_tokens - state.hint_tokens)/state.max_hint_tokens
@@ -44,8 +44,9 @@ def evaluate_play_move(state):
         # Evaluation component based on the probability matrix
         e[i] = 0
         for playable_card in state.playable_cards:
-            e[i] += card.probability_matrix[playable_card.color.value - 1][playable_card.number - 1]
-        
+            if 1 <= playable_card.color.value <= 5 and 1 <= playable_card.number <= 5:
+                e[i] += card.probability_matrix[playable_card.color.value - 1][playable_card.number - 1]
+
         # Check if the card can be surely played successfully
         if e[i] == 1:
             g[i] = 1
@@ -76,7 +77,7 @@ def evaluate_play_move(state):
                 max_index = i
     
     certainty = e[max_index]
-    print("Best play card: ", state.players[state.player_turn].hand_cards[max_index])
+    print("Best play card: ", state.players[state.player_turn].hand_cards[max_index], " Certainty: ", certainty)
 
     return max_index, certainty
 
@@ -111,7 +112,7 @@ def evaluate_discard_move(state):
     discard_index = priority.index(max(priority))
     certainty = e[discard_index]
 
-    print("Best discard card: ", state.players[state.player_turn].hand_cards[discard_index])
+    #print("Best discard card: ", state.players[state.player_turn].hand_cards[discard_index])
                
     return discard_index, certainty
 

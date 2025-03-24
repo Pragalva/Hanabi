@@ -22,7 +22,8 @@ class Card:
         self.hinted_color: bool = False
         self.hinted_excluded_numbers: List[int] = []
         self.hinted_excluded_colors: List["Color"] = []
-        self.probability_matrix: List[List[float]]
+        self.probability_matrix = [[0.0 for _ in range(5)] for _ in range(5)]
+        
     def __repr__(self):
         return f"{self.color.name} {self.number}"
     def __eq__(self, other):
@@ -70,12 +71,11 @@ class Card:
         
         # Remove possible cards from virtual deck based on visible cards
         list_of_deck_cards_copy = list_of_deck_cards.copy()
-        for card in list_of_deck_cards:
-            for visible_card in visible_cards:
-                if card == visible_card:
-                    list_of_deck_cards_copy.remove(card)
-                    visible_cards.remove(visible_card)
-                    break
+        for visible_card in visible_cards:
+            if visible_card in list_of_deck_cards_copy:
+                list_of_deck_cards.remove(visible_card)
+                #visible_cards.remove(visible_card)
+                #break
         list_of_deck_cards = list_of_deck_cards_copy.copy()
         
         # Count the occurences of each card in the virtual deck
@@ -85,4 +85,5 @@ class Card:
             for card2 in list_of_deck_cards:
                 if card1 == card2:
                     count += 1
-            self.probability_matrix[card1.get_color().value - 1][card1.get_number() - 1] = count / len(list_of_deck_cards)
+            if len(list_of_deck_cards) > 0:
+                self.probability_matrix[card1.get_color().value - 1][card1.get_number() - 1] = count / len(list_of_deck_cards)
